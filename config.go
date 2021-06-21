@@ -39,6 +39,7 @@ type Config struct {
 	// created on a prevoius run or created manually, these parameters will not be used.
 	dynamoReadCapacity  int64
 	dynamoWriteCapacity int64
+	dynamoProvisioned   bool
 	// Time to wait between attempts to verify tables were created/deleted completely
 	dynamoWaiterDelay time.Duration
 }
@@ -56,6 +57,7 @@ func NewConfig() Config {
 		dynamoWriteCapacity:   10,
 		dynamoWaiterDelay:     3 * time.Second,
 		logger:                &DefaultLogger{},
+		dynamoProvisioned:     true,
 	}
 }
 
@@ -104,6 +106,12 @@ func (c Config) WithDynamoReadCapacity(readCapacity int64) Config {
 // WithDynamoWriteCapacity returns a Config with a modified dynamo write capacity
 func (c Config) WithDynamoWriteCapacity(writeCapacity int64) Config {
 	c.dynamoWriteCapacity = writeCapacity
+	return c
+}
+
+// WithDynamoProvisioned returns a Config with a provisioned dynamo read/write capacity
+func (c Config) WithDynamoProvisioned(dynamoProvisioned bool) Config {
+	c.dynamoProvisioned = dynamoProvisioned
 	return c
 }
 
