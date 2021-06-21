@@ -286,6 +286,7 @@ func (k *Kinsumer) dynamoCreateTableIfNotExists(name, distKey string) error {
 				AttributeName: aws.String(distKey),
 				AttributeType: aws.String(dynamodb.ScalarAttributeTypeS),
 			}},
+			BillingMode: aws.String(dynamodb.BillingModePayPerRequest),
 			KeySchema: []*dynamodb.KeySchemaElement{{
 				AttributeName: aws.String(distKey),
 				KeyType:       aws.String(dynamodb.KeyTypeHash),
