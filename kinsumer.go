@@ -264,19 +264,7 @@ func (k *Kinsumer) dynamoCreateTableIfNotExists(name, distKey string) error {
 		return nil
 	}
 	var err error
-	if k.config.dynamoReadCapacity == 0 || k.config.dynamoWriteCapacity == 0 {
-		_, err = k.dynamodb.CreateTable(&dynamodb.CreateTableInput{
-			AttributeDefinitions: []*dynamodb.AttributeDefinition{{
-				AttributeName: aws.String(distKey),
-				AttributeType: aws.String(dynamodb.ScalarAttributeTypeS),
-			}},
-			KeySchema: []*dynamodb.KeySchemaElement{{
-				AttributeName: aws.String(distKey),
-				KeyType:       aws.String(dynamodb.KeyTypeHash),
-			}},
-			TableName: aws.String(name),
-		})
-	} else {
+	if k.config.dynamoProvisioned {
 		_, err = k.dynamodb.CreateTable(&dynamodb.CreateTableInput{
 			AttributeDefinitions: []*dynamodb.AttributeDefinition{{
 				AttributeName: aws.String(distKey),
@@ -290,6 +278,18 @@ func (k *Kinsumer) dynamoCreateTableIfNotExists(name, distKey string) error {
 				ReadCapacityUnits:  aws.Int64(k.config.dynamoReadCapacity),
 				WriteCapacityUnits: aws.Int64(k.config.dynamoWriteCapacity),
 			},
+			TableName: aws.String(name),
+		})
+	} else {
+		_, err = k.dynamodb.CreateTable(&dynamodb.CreateTableInput{
+			AttributeDefinitions: []*dynamodb.AttributeDefinition{{
+				AttributeName: aws.String(distKey),
+				AttributeType: aws.String(dynamodb.ScalarAttributeTypeS),
+			}},
+			KeySchema: []*dynamodb.KeySchemaElement{{
+				AttributeName: aws.String(distKey),
+				KeyType:       aws.String(dynamodb.KeyTypeHash),
+			}},
 			TableName: aws.String(name),
 		})
 	}
